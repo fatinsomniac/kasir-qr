@@ -21,6 +21,13 @@
                     <strong>{{ session()->get('failed') }}</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                {{-- Audio --}}
+                  <audio id="myAudio" autoplay>
+                    <source src="{{ asset('sounds/failed.mp3') }}" type="audio/mp3">
+                  </audio>
+                  <button hidden="hidden" onclick="myFunction()">Try it</button>
+                  <p id="demo"></p>
+                {{-- Audio --}}
             @endif
 
             @if (session()->has('success'))
@@ -28,6 +35,13 @@
                     <strong>{{ session()->get('success') }}</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                {{-- Audio --}}
+                  <audio id="myAudio" autoplay>
+                    <source src="{{ asset('sounds/bazzar_rpl.mp3') }}" type="audio/mp3">
+                  </audio>
+                  <button hidden="hidden" onclick="myFunction()">Try it</button>
+                  <p id="demo"></p>
+                {{-- Audio --}}
             @endif
 
             @if (session()->has('notNull'))
@@ -35,6 +49,13 @@
                     <strong>{{ session()->get('notNull') }}</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                {{-- Audio --}}
+                  <audio id="myAudio" autoplay>
+                    <source src="{{ asset('sounds/notnull.mp3') }}" type="audio/mp3">
+                  </audio>
+                  <button hidden="hidden" onclick="myFunction()">Try it</button>
+                  <p id="demo"></p>
+                {{-- Audio --}}
             @endif
 
             @if (session()->has('reset'))
@@ -104,6 +125,12 @@
         document.getElementById('id_item').value = c;
         document.getElementById('form').submit();
       })
+
+      function myFunction() {
+        var x = document.getElementById("myAudio").autoplay;
+        document.getElementById("demo").innerHTML = x;
+      }
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
   </body>
