@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>QR Scanner - RPL</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
       :root {
         --rpl-blue: #1e40af;
@@ -167,6 +168,28 @@
         letter-spacing: 1px;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
       }
+
+      #nextBtn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 4rem;    /* 4x4 ukuran kotak */
+        height: 4rem;
+        border-radius: 8px;
+        z-index: 1000;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        background-color: #435ebe;
+        border: none;
+        transition: 0.3s;
+      }
+      #nextBtn:hover {
+        background-color: #3246a3;
+        transform: scale(1.05);
+      }
+      #nextBtn i {
+        font-size: 1.5rem;
+        color: white;
+      }
       
       @media (max-width: 768px) {
         .rpl-header h2 {
@@ -188,6 +211,13 @@
     </style>
   </head>
   <body>
+
+    <a href="{{ route('items.index') }}" 
+      id="nextBtn"
+      class="btn btn-primary d-flex justify-content-center align-items-center">
+      <i class="bi bi-arrow-right"></i>
+    </a>
+
     <div class="container py-5">
         <!-- Title -->
         <div class="rpl-header text-center mb-4">

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 
@@ -18,3 +19,5 @@ Route::get('/', [OrderController::class, 'index'])->name('order.index');
 Route::post('/store', [OrderController::class, 'store'])->name('order.store');
 Route::get('/store/reset', [OrderController::class, 'reset'])->name('order.reset');
 Route::get('/store/invoice', [OrderController::class, 'print'])->name('order.print');
+
+Route::get('/items',[ItemController::class, 'index'])->name('items.index');
