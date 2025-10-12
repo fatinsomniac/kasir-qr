@@ -20,4 +20,6 @@ Route::post('/store', [OrderController::class, 'store'])->name('order.store');
 Route::get('/store/reset', [OrderController::class, 'reset'])->name('order.reset');
 Route::get('/store/invoice', [OrderController::class, 'print'])->name('order.print');
 
+// items
 Route::get('/items',[ItemController::class, 'index'])->name('items.index');
+Route::post('/items/store',[ItemController::class, 'store'])->name('items.store');

@@ -8,6 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     use HasFactory;
-    
+
     protected $guarded = ['id'];
+
+    protected $fillable = [
+        'uuid',
+        'item_name',
+        'price',
+        'qrcode_path',
+    ];
 }
