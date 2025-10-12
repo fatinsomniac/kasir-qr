@@ -356,8 +356,7 @@
 
 <body>
 
-  <a href="{{ route('order.index') }}"
-    id="nextBtn"
+  <a href="{{ route('order.index') }}" id="nextBtn"
     class="btn btn-primary d-flex justify-content-center align-items-center">
     <i class="bi bi-arrow-left"></i>
   </a>
@@ -379,7 +378,8 @@
       <div class="card-body">
         <!-- Search Bar -->
         <div class="search-section">
-          <input type="text" id="searchInput" class="form-control shadow-sm" placeholder="Cari item berdasarkan nama, ID, atau UUID..." onkeyup="searchTable()">
+          <input type="text" id="searchInput" class="form-control shadow-sm"
+            placeholder="Cari item berdasarkan nama, ID, atau UUID..." onkeyup="searchTable()">
           <button class="btn btn-outline-danger" onclick="resetSearch()">
             <i class="bi bi-x-circle me-1"></i> Reset
           </button>
@@ -401,7 +401,7 @@
               </tr>
             </thead>
             <tbody id="itemTable">
-              <tr>
+              <!-- <tr>
                 <td>1</td>
                 <td>a4f70d2e-a573-45b4-92b6-b6e27bb7a7f1</td>
                 <td>
@@ -457,7 +457,7 @@
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
@@ -474,14 +474,16 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form id="addForm">
+          <form id="addForm" action="{{ route('items.store') }}" method="POST">
+            @csrf
+
             <div class="mb-3">
               <label class="form-label">Nama Item</label>
-              <input type="text" class="form-control" placeholder="Masukkan nama item" required>
+              <input type="text" name="item_name" class="form-control" placeholder="Masukkan nama item" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Harga (Rp)</label>
-              <input type="number" class="form-control" placeholder="Masukkan harga" required min="0">
+              <input type="number" name="price" class="form-control" placeholder="Masukkan harga" required min="0">
             </div>
             <div class="text-end">
               <button type="submit" class="btn btn-success btn-submit">
@@ -529,17 +531,17 @@
   <script>
     // Generate QR Codes dari UUID
     const data = [{
-        id: 1,
-        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f1"
-      },
-      {
-        id: 2,
-        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f2"
-      },
-      {
-        id: 3,
-        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f3"
-      }
+      id: 1,
+      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f1"
+    },
+    {
+      id: 2,
+      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f2"
+    },
+    {
+      id: 3,
+      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f3"
+    }
     ];
 
     data.forEach(item => {
