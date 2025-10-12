@@ -23,3 +23,6 @@ Route::get('/store/invoice', [OrderController::class, 'print'])->name('order.pri
 // items
 Route::get('/items',[ItemController::class, 'index'])->name('items.index');
 Route::post('/items/store',[ItemController::class, 'store'])->name('items.store');
+Route::put('/items/{id}', [ItemController::class, 'update'])->name('items.update');
+Route::delete('/items/{id}/delete',[ItemController::class, 'destroy'])->name('items.destroy');
+Route::get('/qrcode/{uuid}', [ItemController::class, 'showQr'])->name('items.qrcode');
