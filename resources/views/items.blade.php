@@ -361,7 +361,7 @@
     <div id="successAlert" class="alert alert-success alert-dismissible fade show" role="alert" style="margin: 20px; z-index: 9999;">
       <i class="bi bi-check-circle-fill me-2"></i>
       {{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert  " aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   @endif
 
