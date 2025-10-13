@@ -357,21 +357,74 @@
 <body>
 
   <!-- Pesan Success -->
+  {{-- Success Alert --}}
   @if(session('success'))
-    <div id="successAlert" class="alert alert-success alert-dismissible fade show" role="alert" style="margin: 20px; z-index: 9999;">
-      <i class="bi bi-check-circle-fill me-2"></i>
-      {{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+  <div id="successAlert" class="custom-alert alert alert-success d-flex align-items-center shadow-sm" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>
+    <span>{{ session('success') }}</span>
+  </div>
   @endif
 
-  @if (session('error'))
-    <div id="errorAlert" class="alert alert-danger alert-dismissible fade show" role="alert" style="margin: 20px; z-index: 9999;">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>
-      {{ session('error') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+  {{-- Error Alert --}}
+  @if(session('error'))
+  <div id="errorAlert" class="custom-alert alert alert-danger d-flex align-items-center shadow-sm" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <span>{{ session('error') }}</span>
+  </div>
   @endif
+
+  <style>
+    .custom-alert {
+      position: fixed;
+      top: 20px;
+      right: -400px;
+      /* mulai dari luar layar */
+      min-width: 250px;
+      max-width: 350px;
+      font-size: 0.9rem;
+      padding: 10px 15px;
+      border-radius: 8px;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.5s ease-in-out;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .custom-alert.show {
+      right: 20px;
+      opacity: 1;
+    }
+
+    .custom-alert.hide {
+      right: -400px;
+      opacity: 0;
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const alerts = document.querySelectorAll('.custom-alert');
+
+      alerts.forEach(alert => {
+        // animasi masuk
+        setTimeout(() => {
+          alert.classList.add('show');
+        }, 100);
+
+        // tunggu 5 detik, lalu animasi keluar
+        setTimeout(() => {
+          alert.classList.remove('show');
+          alert.classList.add('hide');
+        }, 5100);
+
+        // hapus elemen setelah animasi selesai
+        setTimeout(() => {
+          alert.remove();
+        }, 5600);
+      });
+    });
+  </script>
+
 
   <a href="{{ route('order.index') }}" id="nextBtn"
     class="btn btn-primary d-flex justify-content-center align-items-center">
@@ -408,7 +461,6 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>UUID</th>
                 <th>QR Code</th>
                 <th>Nama Item</th>
                 <th>Harga</th>
@@ -418,63 +470,38 @@
               </tr>
             </thead>
             <tbody id="itemTable">
-              <!-- <tr>
-                <td>1</td>
-                <td>a4f70d2e-a573-45b4-92b6-b6e27bb7a7f1</td>
+              @foreach($items as $item)
+              <tr>
+                <td>{{ $item->id }}</td>
                 <td>
-                  <div id="qr-1" class="qr-box mx-auto"></div>
+                  <a href="{{ route('items.qrcode', $item->uuid) }}">
+                    <img src="{{ asset('storage/' . $item->qrcode_path) }}" alt="QR Code" width="100" style="cursor:pointer;">
+                  </a>
                 </td>
-                <td>Seblak</td>
-                <td class="price-cell">Rp 5.000</td>
-                <td class="date-cell">2025-10-07</td>
-                <td class="date-cell">2025-10-07</td>
+                <td>{{ $item->item_name }}</td>
+                <td class="price-cell">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                <td class="date-cell">{{ $item->created_at->format('d M Y, H:i') }}</td>
+                <td class="date-cell">
+                  @if($item->updated_at->equalTo($item->created_at))
+                  <span class="badge bg-secondary">Belum diperbarui</span>
+                  @else
+                  {{ $item->updated_at->format('d M Y, H:i') }}
+                  @endif
+                </td>
                 <td class="action-cell">
-                  <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editModal">
-                    <i class="bi bi-pencil"></i>
+                  <button class="btn btn-edit btn-action" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ $item->id }}" data-name="{{ $item->item_name }}" data-price="{{ $item->price }}">
+                    <i class="bi bi-pencil-square"></i>
                   </button>
-                  <button class="btn btn-action btn-delete">
-                    <i class="bi bi-trash"></i>
-                  </button>
+                  <form action="{{ route('items.destroy', $item->id) }}" method="POST" onSubmit=" return confirm('Yakin ingin menghapus item ini?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-delete btn-action">
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  </form>
                 </td>
               </tr>
-              <tr>
-                <td>2</td>
-                <td>a4f70d2e-a573-45b4-92b6-b6e27bb7a7f2</td>
-                <td>
-                  <div id="qr-2" class="qr-box mx-auto"></div>
-                </td>
-                <td>Rujak Kangkung</td>
-                <td class="price-cell">Rp 5.000</td>
-                <td class="date-cell">2025-10-07</td>
-                <td class="date-cell">2025-10-07</td>
-                <td class="action-cell">
-                  <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editModal">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <button class="btn btn-action btn-delete">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>a4f70d2e-a573-45b4-92b6-b6e27bb7a7f3</td>
-                <td>
-                  <div id="qr-3" class="qr-box mx-auto"></div>
-                </td> 
-                <td>Es Jeruk</td>
-                <td class="price-cell">Rp 5.000</td>
-                <td class="date-cell">2025-10-07</td>
-                <td class="date-cell">2025-10-07</td>
-                <td class="action-cell">
-                  <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#editModal">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <button class="btn btn-action btn-delete">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </td>
-              </tr> -->
+              @endforeach
             </tbody>
           </table>
         </div>
@@ -498,9 +525,10 @@
               <label class="form-label">Nama Item</label>
               <input type="text" name="item_name" class="form-control" placeholder="Masukkan nama item" required>
             </div>
+
             <div class="mb-3">
               <label class="form-label">Harga (Rp)</label>
-              <input type="number" name="price" class="form-control" placeholder="Masukkan harga" required min="0">
+              <input type="number" name="price" class="form-control" placeholder="Masukkan harga" required min="0" step="1000" required>
             </div>
             <div class="text-end">
               <button type="submit" class="btn btn-success btn-submit">
@@ -522,14 +550,17 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <form id="editForm">
+          <!-- ACTION AKAN DIISI OTOMATIS DARI SCRIPT -->
+          <form id="editForm" method="POST">
+            @csrf
+            @method('PUT')
             <div class="mb-3">
               <label class="form-label">Nama Item</label>
-              <input type="text" class="form-control" value="Seblak" required>
+              <input type="text" name="item_name" class="form-control" required>
             </div>
             <div class="mb-3">
               <label class="form-label">Harga (Rp)</label>
-              <input type="number" class="form-control" value="5000" required min="0">
+              <input type="number" name="price" class="form-control" required min="0">
             </div>
             <div class="text-end">
               <button type="submit" class="btn btn-warning btn-submit">
@@ -548,27 +579,39 @@
   <script>
     // Generate QR Codes dari UUID
     const data = [{
-      id: 1,
-      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f1"
-    },
-    {
-      id: 2,
-      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f2"
-    },
-    {
-      id: 3,
-      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f3"
-    }
+        id: 1,
+        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f1"
+      },
+      {
+        id: 2,
+        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f2"
+      },
+      {
+        id: 3,
+        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f3"
+      }
     ];
 
     data.forEach(item => {
-      new QRCode(document.getElementById("qr-" + item.id), {
-        text: item.uuid,
-        width: 70,
-        height: 70,
-        colorDark: "#435ebe",
-        colorLight: "#ffffff"
-      });
+      // pastikan elemen target ada sebelum membuat QRCode
+      const target = document.getElementById("qr-" + item.id);
+      if (!target) {
+        // debug: seringkali halaman sudah merender <img> untuk QR, jadi elemen dengan id ini tidak ada
+        console.debug(`QR element #qr-${item.id} not found, skipping QRCode generation.`);
+        return;
+      }
+
+      try {
+        new QRCode(target, {
+          text: item.uuid,
+          width: 70,
+          height: 70,
+          colorDark: "#435ebe",
+          colorLight: "#ffffff"
+        });
+      } catch (err) {
+        console.error('Failed to generate QR for', item, err);
+      }
     });
 
     // Fungsi pencarian tabel
@@ -585,6 +628,29 @@
       document.getElementById("searchInput").value = "";
       searchTable();
     }
+
+    // Edit Item dengan Fetch API
+    document.addEventListener('DOMContentLoaded', function() {
+      const editButtons = document.querySelectorAll('.btn-edit');
+      const form = document.getElementById('editForm');
+      const nameInput = form.querySelector('input[name="item_name"]');
+      const priceInput = form.querySelector('input[name="price"]');
+
+      editButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const id = this.dataset.id;
+          const name = this.dataset.name;
+          const price = this.dataset.price;
+
+          // isi form
+          nameInput.value = name;
+          priceInput.value = price;
+
+          // ubah action form
+          form.action = `/items/${id}`;
+        });
+      });
+    });
   </script>
 
 </body>

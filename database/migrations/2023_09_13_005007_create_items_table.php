@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('uuid');
-            $table->string('item_name');
+            $table->string('item_name')->unique();
             $table->integer('price');
             $table->string('qrcode_path')->nullable();
             $table->timestamps();
