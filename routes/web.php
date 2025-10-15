@@ -22,6 +22,7 @@ Route::get('/store/invoice', [OrderController::class, 'print'])->name('order.pri
 
 // items
 Route::get('/items',[ItemController::class, 'index'])->name('items.index');
+Route::get('/items/download/qr',[ItemController::class, 'downloadQr'])->name('items.download-qr-code');
 Route::post('/items/store',[ItemController::class, 'store'])->name('items.store');
 Route::put('/items/{id}', [ItemController::class, 'update'])->name('items.update');
 Route::delete('/items/{id}/delete',[ItemController::class, 'destroy'])->name('items.destroy');

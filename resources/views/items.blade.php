@@ -7,6 +7,7 @@
   <title>Daftar Item</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href={{ asset('assets/css/default.css') }}>
 
   <style>
     :root {
@@ -356,21 +357,20 @@
 
 <body>
 
-  <!-- Pesan Success -->
   {{-- Success Alert --}}
   @if(session('success'))
-  <div id="successAlert" class="custom-alert alert alert-success d-flex align-items-center shadow-sm" role="alert">
-    <i class="bi bi-check-circle-fill me-2"></i>
-    <span>{{ session('success') }}</span>
-  </div>
+    <div id="successAlert" class="custom-alert alert alert-success d-flex align-items-center shadow-sm" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <span>{{ session('success') }}</span>
+    </div>
   @endif
 
   {{-- Error Alert --}}
   @if(session('error'))
-  <div id="errorAlert" class="custom-alert alert alert-danger d-flex align-items-center shadow-sm" role="alert">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    <span>{{ session('error') }}</span>
-  </div>
+    <div id="errorAlert" class="custom-alert alert alert-danger d-flex align-items-center shadow-sm" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <span>{{ session('error') }}</span>
+    </div>
   @endif
 
   <style>
@@ -449,10 +449,12 @@
         <!-- Search Bar -->
         <div class="search-section">
           <input type="text" id="searchInput" class="form-control shadow-sm"
-            placeholder="Cari item berdasarkan nama, ID, atau UUID..." onkeyup="searchTable()">
-          <button class="btn btn-outline-danger" onclick="resetSearch()">
-            <i class="bi bi-x-circle me-1"></i> Reset
-          </button>
+            placeholder="Cari item berdasarkan nama, ID, atau UUID" onkeyup="searchTable()">
+
+          <!-- Button Download -->
+          <a href="{{ route('items.download-qr-code') }}" class="btn btn-danger">
+            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download semua QR ke PDF
+          </a>
         </div>
 
         <!-- Table -->
@@ -471,36 +473,39 @@
             </thead>
             <tbody id="itemTable">
               @foreach($items as $item)
-              <tr>
-                <td>{{ $item->id }}</td>
-                <td>
-                  <a href="{{ route('items.qrcode', $item->uuid) }}">
-                    <img src="{{ asset('storage/' . $item->qrcode_path) }}" alt="QR Code" width="100" style="cursor:pointer;">
-                  </a>
-                </td>
-                <td>{{ $item->item_name }}</td>
-                <td class="price-cell">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
-                <td class="date-cell">{{ $item->created_at->format('d M Y, H:i') }}</td>
-                <td class="date-cell">
-                  @if($item->updated_at->equalTo($item->created_at))
-                  <span class="badge bg-secondary">Belum diperbarui</span>
-                  @else
-                  {{ $item->updated_at->format('d M Y, H:i') }}
-                  @endif
-                </td>
-                <td class="action-cell">
-                  <button class="btn btn-edit btn-action" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{ $item->id }}" data-name="{{ $item->item_name }}" data-price="{{ $item->price }}">
-                    <i class="bi bi-pencil-square"></i>
-                  </button>
-                  <form action="{{ route('items.destroy', $item->id) }}" method="POST" onSubmit=" return confirm('Yakin ingin menghapus item ini?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-delete btn-action">
-                      <i class="bi bi-trash-fill"></i>
+                <tr>
+                  <td>{{ $item->id }}</td>
+                  <td>
+                    <a href="{{ route('items.qrcode', $item->uuid) }}">
+                      <img src="{{ asset('storage/' . $item->qrcode_path) }}" alt="QR Code" width="100"
+                        style="cursor:pointer;">
+                    </a>
+                  </td>
+                  <td>{{ $item->item_name }}</td>
+                  <td class="price-cell">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                  <td class="date-cell">{{ $item->created_at->format('d M Y, H:i') }}</td>
+                  <td class="date-cell">
+                    @if($item->updated_at->equalTo($item->created_at))
+                      <span class="badge bg-secondary">Belum diperbarui</span>
+                    @else
+                      {{ $item->updated_at->format('d M Y, H:i') }}
+                    @endif
+                  </td>
+                  <td class="action-cell">
+                    <button class="btn btn-edit btn-action" data-bs-toggle="modal" data-bs-target="#editModal"
+                      data-id="{{ $item->id }}" data-name="{{ $item->item_name }}" data-price="{{ $item->price }}">
+                      <i class="bi bi-pencil-square"></i>
                     </button>
-                  </form>
-                </td>
-              </tr>
+                    <form action="{{ route('items.destroy', $item->id) }}" method="POST"
+                      onSubmit=" return confirm('Yakin ingin menghapus item ini?');">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-delete btn-action">
+                        <i class="bi bi-trash-fill"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
               @endforeach
             </tbody>
           </table>
@@ -528,7 +533,8 @@
 
             <div class="mb-3">
               <label class="form-label">Harga (Rp)</label>
-              <input type="number" name="price" class="form-control" placeholder="Masukkan harga" required min="0" step="1000" required>
+              <input type="number" name="price" class="form-control" placeholder="Masukkan harga" required min="0"
+                step="1000" required>
             </div>
             <div class="text-end">
               <button type="submit" class="btn btn-success btn-submit">
@@ -579,17 +585,17 @@
   <script>
     // Generate QR Codes dari UUID
     const data = [{
-        id: 1,
-        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f1"
-      },
-      {
-        id: 2,
-        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f2"
-      },
-      {
-        id: 3,
-        uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f3"
-      }
+      id: 1,
+      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f1"
+    },
+    {
+      id: 2,
+      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f2"
+    },
+    {
+      id: 3,
+      uuid: "a4f70d2e-a573-45b4-92b6-b6e27bb7a7f3"
+    }
     ];
 
     data.forEach(item => {
@@ -624,20 +630,15 @@
       });
     }
 
-    function resetSearch() {
-      document.getElementById("searchInput").value = "";
-      searchTable();
-    }
-
     // Edit Item dengan Fetch API
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const editButtons = document.querySelectorAll('.btn-edit');
       const form = document.getElementById('editForm');
       const nameInput = form.querySelector('input[name="item_name"]');
       const priceInput = form.querySelector('input[name="price"]');
 
       editButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
           const id = this.dataset.id;
           const name = this.dataset.name;
           const price = this.dataset.price;

@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Item;
 use Illuminate\Support\Str;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ItemController extends Controller
 {
@@ -107,5 +108,22 @@ class ItemController extends Controller
     {
         $item = Item::where('uuid', $uuid)->firstOrFail();
         return view('show_qr', compact('item'));
+    }
+
+    // Donwload all QR's to PDF
+    public function downloadQr()
+    {
+        $items = Item::all();
+
+        if ($items->isEmpty()) {
+            return redirect()->back()
+                ->with('error', 'Tidak ada item untuk di-download.');
+        }
+
+        $pdf = PDF::loadView('items.all-qrcodes', compact('items'));
+
+        $filename = 'all-qr-codes-' . now()->format('Y-m-d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }
