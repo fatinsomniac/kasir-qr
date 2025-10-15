@@ -12,51 +12,68 @@ class OrderController extends Controller
     {
         return view('welcome', [
             'orders' => Order::orderBy('id', 'desc')->get()
-        ]);   
+        ]);
     }
 
     public function store(Request $request)
     {
-        // Cek data null
-        $id_item = $request->id_item;
-        $cekNull = Item::where([
-            'uuid' => $id_item
-        ])->first();
+        // Validasi input
+        $request->validate([
+            'id_item'  => 'required',
+            'quantity' => 'required|integer|min:1',
+            'payment'  => 'required|numeric|min:0',
+        ]);
 
-        if (!$cekNull) {
+        // Cek apakah item valid
+        $item = Item::where('uuid', $request->id_item)->first();
+        if (!$item) {
             return redirect('/')->with('notNull', 'Item tidak terdaftar');
         }
 
-        $price = $cekNull->price;
-        $qty = $request->quantity ?? 1;
+        $price = $item->price;
+        $qty = $request->quantity;
         $total_price = $price * $qty;
 
-        // Cek data
+        // Hitung total pesanan yang sudah ada
+        $existingOrders = Order::all();
+        $grandTotal = $existingOrders->sum('total_price') + $total_price;
+
+        // Cek apakah uang cukup
+        if ($request->payment < $grandTotal) {
+            return redirect('/')->with('failed', 'Uang pembayaran tidak mencukupi');
+        }
+
+        // Cek duplikasi item
         $cek = Order::where([
             'id_item'     => $request->id_item,
-            'quantity'    => $request->quantity ?? 1,
+            'quantity'    => $request->quantity,
             'date'        => date('Y-m-d'),
             'total_price' => $total_price
         ])->first();
 
         if ($cek) {
-            return redirect('/')->with('failed', 'Item sudah dimasukan');
+            return redirect('/')->with('failed', 'Item sudah dimasukkan');
         }
 
+        // Simpan order
         Order::create([
             'id_item'  => $request->id_item,
-            'quantity' => $request->quantity ?? 1,
+            'quantity' => $request->quantity,
             'date'     => date('Y-m-d'),
             'total_price' => $total_price
         ]);
 
+        // Simpan nominal pembayaran terakhir ke session (buat struk)
+        session(['payment' => $request->payment]);
+
         return redirect('/')->with('success', 'Item berhasil ditambahkan');
     }
+
 
     public function reset()
     {
         Order::truncate();
-        
+
         return redirect('/')->with('reset', 'Silahkan masukan pesanan kembali');
     }
 
