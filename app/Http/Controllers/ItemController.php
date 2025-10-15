@@ -17,6 +17,10 @@ class ItemController extends Controller
         return view('items', compact('items'));
     }
 
+
+    // {{ CRUD Items }}
+
+    // Create item
     public function store(Request $request)
     {
         // ✅ Validasi manual agar pesan error bisa dikirim ke alert
@@ -69,6 +73,7 @@ class ItemController extends Controller
         }
     }
 
+    // Update item
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -85,6 +90,7 @@ class ItemController extends Controller
         return redirect()->back()->with('success', 'Item berhasil diperbarui.');
     }
 
+    // Delete item
     public function destroy($id)
     {
         try {
@@ -104,6 +110,8 @@ class ItemController extends Controller
         }
     }
 
+    // {{ QR Code }}
+    // Show single QR code
     public function showQr($uuid)
     {
         $item = Item::where('uuid', $uuid)->firstOrFail();
@@ -125,5 +133,36 @@ class ItemController extends Controller
         $filename = 'all-qr-codes-' . now()->format('Y-m-d') . '.pdf';
 
         return $pdf->download($filename);
+    }
+
+    public function downloadOneQr($uuid)
+    {
+        try {
+            // Cari item berdasarkan UUID
+            $item = Item::where('uuid', $uuid)->first();
+
+            // Validasi jika item tidak ditemukan
+            if (!$item) {
+                return redirect()->back()
+                    ->with('error', 'Item tidak ditemukan!');
+            }
+
+            // Validasi jika QR code path tidak ada
+            if (!$item->qrcode_path || !file_exists(storage_path('app/public/' . $item->qrcode_path))) {
+                return redirect()->back()
+                    ->with('error', 'QR Code tidak ditemukan!');
+            }
+
+            // Generate PDF
+            $pdf = PDF::loadView('items.single-qrcode', compact('item'));
+
+            $filename = 'qr-code-' . Str::slug($item->item_name) . '.pdf';
+
+            return $pdf->download($filename);
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

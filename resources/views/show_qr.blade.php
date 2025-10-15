@@ -69,9 +69,9 @@
       <button class="btn btn-secondary" onclick="window.history.back();">
         <i class="bi bi-arrow-left"></i> Kembali
       </button>
-      <button class="btn btn-danger">
+      <a href={{ route("items.download-one-qrcode", $item -> uuid) }} class="btn btn-danger">
         <i class="bi bi-file-earmark-pdf-fill"></i> Download ke PDF
-      </button>
+      </a>
       <button class="btn btn-primary" onclick="window.print();">
         <i class="bi bi-printer"></i> Cetak
       </button>
