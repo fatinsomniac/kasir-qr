@@ -35,18 +35,20 @@
 
         body .qr-table .qr-item {
             width: 33.33%;
-            /* 3 kolom */
             text-align: center;
             padding: 20px 10px;
-            /* Kurangi horizontal padding */
             border: 1px solid #ecf0f1;
             page-break-inside: avoid;
             vertical-align: middle;
             height: 200px;
-            /* Fixed height untuk konsistensi */
         }
 
-        /* Wrapper untuk memusatkan konten - CSS TRADISIONAL */
+        body .qr-table .qr-item h4{
+            text-align: center;
+            page-break-inside: avoid;
+            vertical-align: middle;
+        }
+
         .qr-box {
             text-align: center;
             display: block;
@@ -57,7 +59,6 @@
         .qr-box img {
             display: block;
             margin: 0 auto 10px auto;
-            /* Center image */
         }
 
         .uuid {
@@ -68,7 +69,6 @@
             line-height: 1.2;
         }
 
-        /* Page Breaks */
         .page-break {
             page-break-after: always;
             height: 0;
@@ -102,6 +102,7 @@
             <tr>
                 @foreach($row as $item)
                     <td class="qr-item">
+                        <h4>{{ $item->item_name }}</h4>
                         <img src="{{ storage_path('app/public/' . $item->qrcode_path) }}" width="100" height="100" alt="QR Code"
                             style="display: block; margin: 0 auto 10px auto;">
 
