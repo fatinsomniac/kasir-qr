@@ -26,18 +26,6 @@
 
     <!-- Scanner Card -->
     <div class="scanner-card">
-      <!-- Pesan failed-->
-      @if (session()->has('failed'))
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          <span>{{ session()->get('failed') }}</span>
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        <audio id="myAudio" autoplay>
-          <source src="{{ asset('sounds/failed.mp3') }}" type="audio/mp3">
-        </audio>
-      @endif
-
       <!-- Pesan success -->
       @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -48,6 +36,15 @@
         <audio id="myAudio" autoplay>
           <source src="{{ asset('sounds/bazzar_rpl.mp3') }}" type="audio/mp3">
         </audio>
+      @endif
+
+      <!-- Pesan error -->
+       @if (session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span>{{ session()->get('error') }}</span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
       @endif
 
       <!-- Item tidak ada -->
@@ -94,8 +91,7 @@
           <input type="hidden" name="id_item" id="id_item">
 
           <div class="quantity-input mb-3">
-            <input type="number" name="quantity" class="form-control" placeholder="Masukkan Jumlah Pesanan" min="1" default="1"
-              step="1">
+            <input type="number" name="quantity" class="form-control" placeholder="Masukkan Jumlah Pesanan" min="1" default="1" step="1">
           </div>        
         </form>
 

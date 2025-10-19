@@ -18,6 +18,11 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+        // Validasi manual untuk quantity
+        if (empty($request->quantity) || $request->quantity < 1) {
+            return redirect('/')->with('error', 'Maaf, harap masukkan jumlah pesanan terlebih dahulu sebelum menscan QR nya. Silahkan coba lagi!');
+        }
+
         // Validasi input
         $request->validate([
             'id_item' => 'required',
@@ -68,7 +73,7 @@ class OrderController extends Controller
 
         // Validasi pembayaran
         if ($request->payment < $grandTotal) {
-            return redirect('/')->with('failed', 'Uang pembayaran tidak mencukupi');
+            return redirect('/')->with('error', 'Uang pembayaran tidak mencukupi');
         }
 
         // Simpan ke session untuk struk
@@ -99,7 +104,7 @@ class OrderController extends Controller
         $orders = session('orders');
 
         if (!$payment) {
-            return redirect('/')->with('failed', 'Tidak ada data pembayaran');
+            return redirect('/')->with('error', 'Tidak ada data pembayaran');
         }
 
         // Tampilkan halaman invoice
