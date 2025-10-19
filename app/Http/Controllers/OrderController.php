@@ -17,7 +17,7 @@ class OrderController extends Controller
     }
 
     public function store(Request $request)
-    {
+    {    
         // Validasi manual untuk quantity
         if (empty($request->quantity) || $request->quantity < 1) {
             return redirect('/')->with('error', 'Maaf, harap masukkan jumlah pesanan terlebih dahulu sebelum menscan QR nya. Silahkan coba lagi!');

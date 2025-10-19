@@ -1,6 +1,9 @@
 .container {
     width: 80mm;
+    max-width: 80mm;
     margin: 0 auto;
+    padding: 5px;
+    box-sizing: border-box;
 }
 
 .header {
@@ -63,3 +66,4 @@ a {
     color: white;
     font-weight: bold;
 }
+

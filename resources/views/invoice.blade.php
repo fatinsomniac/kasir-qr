@@ -50,22 +50,21 @@
             </div>
         @endforeach
         <hr>
-        <div class="flex-container" style="text-align: right; margin-top: 10px;">
-            <div></div>
-            <div>
+        <div class="flex-container-1" style="margin-top: 10px;">
+            <div class="left">
                 <ul>
-                    <li>Grand Total</li>
-                    <li>Pembayaran</li>
-                    <li>Kembalian</li>
+                    <li>Grand Total: </li>
+                    <li>Pembayaran: </li>
+                    <li>Kembalian: </li>
                 </ul>
             </div>
-            <div style="text-align: right;">
+            <div class="right" style="text-align: right;">
                 <?php
-$sum = $orders->sum('total_price');
-$pay = session('payment', 0);
+                    $sum = $orders->sum('total_price');
+                    $pay = session('payment', 0);
                 ?>
                 <ul>
-                    <li>Rp {{ number_format($sum) }} </li>
+                    <li>Rp {{ number_format($sum) }}</li>
                     <li>Rp {{ number_format($pay) }}</li>
                     <li>Rp {{ number_format(abs($sum - $pay)) }}</li>
                 </ul>
